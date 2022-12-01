@@ -6,10 +6,18 @@ import java.util.Scanner;
 public class Main {
     static Scanner in = new Scanner(System.in);
     public static void main(String[] args) {
+        /*
+        Создание и запись массивов
+         */
+
         int[] array1 = toRecord();
         int[] array2 = toRecord();
         int[] array3 = toRecord();
 
+        /*
+        Создание и запуск потоков
+        в качестве параметров передаются заполненные массивы
+         */
         Thread thread1 = new Thread(new SaveAsThread(array1));
         Thread thread2 = new Thread(new SaveAsThread(array2));
         Thread thread3 = new Thread(new SaveAsThread(array3));
@@ -33,22 +41,27 @@ public class Main {
     }
 }
 
-    class SaveAsThread implements Runnable{
-        int[] array;
+class SaveAsThread implements Runnable{
+    int[] array;
 
-        SaveAsThread(int[] array){
-            this.array = array;
+    SaveAsThread(int[] array){
+        this.array = array;
+    }
+    @Override
+    public void run(){
+        String text = Arrays.toString(array); // Массив, переданный в качестве параметров, переделывается в строчку
+
+        /*
+        Запись массива в файл.
+        При создании поток в параметрах передаётся файл и параметр "true".
+        Без этого параметра файл будет перезаписываться в каждом потоке.
+         */
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter("file.txt", true))){
+            bw.write(text + "\t");
+            bw.flush();
         }
-        @Override
-        public void run(){
-            String text = Arrays.toString(array);
-
-            try(BufferedWriter bw = new BufferedWriter(new FileWriter("file.txt", true))){
-                bw.write(text + "\t");
-                bw.flush();
-            }
-            catch (Exception e){
-                System.out.print(e.getMessage());
-            }
+        catch (Exception e){
+            System.out.print(e.getMessage());
         }
     }
+}
