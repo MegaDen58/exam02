@@ -18,9 +18,9 @@ public class Main {
         Создание и запуск потоков
         в качестве параметров передаются заполненные массивы
          */
-        Thread thread1 = new Thread(new SaveAsThread(array1));
-        Thread thread2 = new Thread(new SaveAsThread(array2));
-        Thread thread3 = new Thread(new SaveAsThread(array3));
+        Thread thread1 = new Thread(new SaveAsThread(array1, 1));
+        Thread thread2 = new Thread(new SaveAsThread(array2, 2));
+        Thread thread3 = new Thread(new SaveAsThread(array3, 3));
 
         thread1.start();
         thread2.start();
@@ -43,9 +43,11 @@ public class Main {
 
 class SaveAsThread implements Runnable{
     int[] array;
+    int id;
 
-    SaveAsThread(int[] array){
+    SaveAsThread(int[] array, int id){
         this.array = array;
+        this.id = id;
     }
     @Override
     public void run(){
@@ -57,7 +59,7 @@ class SaveAsThread implements Runnable{
         Без этого параметра файл будет перезаписываться в каждом потоке.
          */
         try(BufferedWriter bw = new BufferedWriter(new FileWriter("file.txt", true))){
-            bw.write(text + "\t");
+            bw.write("№" + id + " " + text + "\t");
             bw.flush();
         }
         catch (Exception e){
